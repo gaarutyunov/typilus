@@ -3,37 +3,37 @@ from typing import Dict, Any, Optional, Type
 import tensorflow as tf
 from dpu_utils.utils import RichPath
 
-from .graph2annotation import Graph2Annotation
-from .graph2hybridmetric import Graph2HybridMetric
-from .graph2metric import Graph2Metric
 from .model import Model
-from .path2annotation import Path2Annotation
-from .path2hybridmetric import Path2HybridMetric
-from .path2metric import Path2Metric
-from .sequence2annotation import Sequence2Annotation
-from .sequence2hybridmetric import Sequence2HybridMetric
-from .sequence2metric import Sequence2Metric
 
 
 def get_model_class_from_name(model_name: str) -> Type[Model]:
     model_name = model_name.lower()
     if model_name in ['graph2annotation']:
+        from .graph2annotation import Graph2Annotation
         return Graph2Annotation
     elif model_name in ['graph2metric']:
+        from .graph2metric import Graph2Metric
         return Graph2Metric
     elif model_name in ['seq2annotation', 'sequence2annotation']:
+        from .sequence2annotation import Sequence2Annotation
         return Sequence2Annotation
     elif model_name in ['seq2metric', 'sequence2metric']:
+        from .sequence2metric import Sequence2Metric
         return Sequence2Metric
     elif model_name in ['graph2hybridmetric']:
+        from .graph2hybridmetric import Graph2HybridMetric
         return Graph2HybridMetric
     elif model_name in ['seq2hybridmetric', 'sequence2hybridmetric']:
+        from .sequence2hybridmetric import Sequence2HybridMetric
         return Sequence2HybridMetric
     elif model_name in {'path2annotation'}:
+        from .path2annotation import Path2Annotation
         return Path2Annotation
     elif model_name in {'path2metric'}:
+        from .path2metric import Path2Metric
         return Path2Metric
     elif model_name in {'path2hybridmetric'}:
+        from .path2hybridmetric import Path2HybridMetric
         return Path2HybridMetric
     else:
         raise Exception("Unknown model '%s'!" % model_name)
