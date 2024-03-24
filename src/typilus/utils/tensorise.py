@@ -14,6 +14,7 @@ Options:
     --metadata-to-use PATH     Select metadata to use.
     --for-test                 Flag indicating if the data should be tensorised as test data. [default: False]
     --debug                    Enable debug routines. [default: False]
+    --add-raw-data             Add raw data to tensorised data. [default: False]
     --azure-info=<path>        Azure authentication information file (JSON). Used to load data from Azure storage.
 """
 import json
@@ -63,7 +64,7 @@ def run(arguments):
         metadata_path = RichPath.create(metadata_to_use, azure_info_path)
         model.load_existing_metadata(metadata_path)
 
-    for_test = args.get('--for-test', False)
+    for_test = arguments.get('--for-test', False)
     model.make_model(is_train=not for_test)
 
     for input_folder in input_folders:
@@ -72,7 +73,8 @@ def run(arguments):
         model.tensorise_data_in_dir(input_folder,
                                     this_output_folder,
                                     for_test=for_test,
-                                    max_num_files=int(arguments['--max-num-files']))
+                                    max_num_files=int(arguments['--max-num-files']),
+                                    add_raw_data=arguments.get('--add-raw-data', False))
 
 
 if __name__ == '__main__':
