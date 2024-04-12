@@ -1,0 +1,3 @@
+FROM germanarutyunov/typilus-env:latest
+
+CMD ["/usr/src/datasetbuilder/scripts/process_data.sh"]
