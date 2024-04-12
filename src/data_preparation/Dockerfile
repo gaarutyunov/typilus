@@ -23,11 +23,10 @@ RUN apt-get remove -y python3-setuptools
 # Subsequent commands are placed here to avoid rebuilding the previous steps if
 # anything in the files below changes.
 WORKDIR /usr/src/datasetbuilder
+RUN git clone https://github.com/gaarutyunov/typilus.git
+RUN git clone --depth=1 https://github.com/microsoft/near-duplicate-code-detector.git
 COPY ./metadata ./metadata
 COPY ./scripts ./scripts
 COPY ./*.spec ./
 
-RUN git clone https://github.com/gaarutyunov/typilus.git
-RUN git clone --depth=1 https://github.com/microsoft/near-duplicate-code-detector.git
-
-ENV PYTHONPATH=/usr/src/datasetbuilder/typilus:/usr/str/datasetbuilder/scripts:/usr/str/datasetbuilder/near-duplicate-code-detector:$PYTHONPATH
+ENV PYTHONPATH=/usr/src/datasetbuilder/typilus/src:/usr/str/datasetbuilder/scripts:/usr/str/datasetbuilder/near-duplicate-code-detector:$PYTHONPATH

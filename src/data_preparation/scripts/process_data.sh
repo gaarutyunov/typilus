@@ -7,9 +7,9 @@ cd /usr/data
 ###
 
 mkdir -p ./repo_tokens
-python3 /usr/src/near-duplicate-code-detector/tokenizers/python/tokenizepythoncorpus.py ./raw_repos/ ./repo_tokens/
+python3 /usr/src/datasetbuilder/near-duplicate-code-detector/tokenizers/python/tokenizepythoncorpus.py ./raw_repos/ ./repo_tokens/
 echo "In " $PWD
-dotnet run --project /usr/src/near-duplicate-code-detector/DuplicateCodeDetector/DuplicateCodeDetector.csproj -- --dir="./repo_tokens/" "./corpus_duplicates"
+dotnet run --no-restore --project /usr/src/datasetbuilder/near-duplicate-code-detector/DuplicateCodeDetector/DuplicateCodeDetector.csproj -- --dir="./repo_tokens/" "./corpus_duplicates"
 
 
 ###
@@ -41,7 +41,7 @@ python3 "$SRC_BASE"utils/split.py -data-dir ./graph-dataset -out-dir ./graph-dat
 ###
 # Tensorise data
 ##
-cd /usr/src/datasetbuilder/typilus
+cd /usr/src/datasetbuilder/typilus/src
 
 python3 typilus/utils/tensorise.py /usr/data/tensorized-data/train /usr/data/graph-dataset-split/train --hypers-override '{"cg_node_label_embedding_style": "Token"}' --add-raw-data
 python3 typilus/utils/tensorise.py /usr/data/tensorized-data/valid /usr/data/graph-dataset-split/valid --hypers-override '{"cg_node_label_embedding_style": "Token"}' --add-raw-data --metadata-to-use /usr/data/tensorized-data/train/metadata.pkl.gz
