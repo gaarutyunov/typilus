@@ -11,7 +11,7 @@ RUN apt-get install -y dotnet-sdk-2.2
 COPY ./metadata/popularLibs.txt ./metadata/popularLibs.txt
 RUN pip3 install --no-cache-dir -r metadata/popularLibs.txt
 RUN pip3 install --no-cache-dir dpu_utils graphviz split
-RUN pip3 install --no-cache-dir tensorflow==1.13.2 dpu-utils sentencepiece annoy
+RUN pip3 install --no-cache-dir tensorflow==1.13.2 dpu-utils annoy
 
 # For debugging
 # RUN pip3 install --no-cache-dir docopt numpy matplotlib typed-ast
@@ -26,4 +26,8 @@ WORKDIR /usr/src/datasetbuilder
 COPY ./metadata ./metadata
 COPY ./scripts ./scripts
 COPY ./*.spec ./
+
 RUN git clone https://github.com/gaarutyunov/typilus.git
+RUN git clone --depth=1 https://github.com/microsoft/near-duplicate-code-detector.git
+
+ENV PYTHONPATH=/usr/src/datasetbuilder/typilus:/usr/str/datasetbuilder/scripts:/usr/str/datasetbuilder/near-duplicate-code-detector:$PYTHONPATH

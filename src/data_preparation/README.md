@@ -37,7 +37,7 @@ Finally, to clone the repositories, infer types, build the graphs for the deep
 learning model, and split the data into folds, run:
 
 ```bash
-bash scripts/prepare_data.sh metadata/typedRepos.txt
+bash scripts/prepare_data.sh pldi2020-dataset.spec
 ```
 
 Alternatively, run
