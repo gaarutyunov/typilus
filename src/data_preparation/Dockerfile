@@ -32,10 +32,13 @@ COPY ./*.spec ./
 
 ENV PYTHONPATH=/usr/src/datasetbuilder/typilus/src:/usr/str/datasetbuilder/scripts:/usr/str/datasetbuilder/near-duplicate-code-detector:$PYTHONPATH
 
-RUN chmod +x /usr/src/datasetbuilder/scripts/deduplicate_data.sh
-RUN chmod +x /usr/src/datasetbuilder/scripts/process_data.sh
-RUN chmod +x /usr/src/datasetbuilder/scripts/pytype_data.sh
 RUN chmod +x /usr/src/datasetbuilder/scripts/tensorise_data.sh
+RUN chmod +x /usr/src/datasetbuilder/scripts/deduplicate_data.sh
+RUN chmod +x /usr/src/datasetbuilder/scripts/pytype_data.sh
+RUN chmod +x /usr/src/datasetbuilder/scripts/extract_graphs.sh
+RUN chmod +x /usr/src/datasetbuilder/scripts/split_data.sh
 RUN chmod +x /usr/src/datasetbuilder/scripts/tokenize_data.sh
+
+RUN chmod +x /usr/src/datasetbuilder/scripts/process_data.sh
 
 RUN mkdir -p /usr/data
