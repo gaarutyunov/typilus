@@ -25,8 +25,17 @@ RUN apt-get remove -y python3-setuptools
 WORKDIR /usr/src/datasetbuilder
 RUN git clone https://github.com/gaarutyunov/typilus.git
 RUN git clone --depth=1 https://github.com/microsoft/near-duplicate-code-detector.git
+RUN dotnet restore /usr/src/datasetbuilder/near-duplicate-code-detector/DuplicateCodeDetector/DuplicateCodeDetector.csproj
 COPY ./metadata ./metadata
 COPY ./scripts ./scripts
 COPY ./*.spec ./
 
 ENV PYTHONPATH=/usr/src/datasetbuilder/typilus/src:/usr/str/datasetbuilder/scripts:/usr/str/datasetbuilder/near-duplicate-code-detector:$PYTHONPATH
+
+RUN chmod +x /usr/src/datasetbuilder/scripts/deduplicate_data.sh
+RUN chmod +x /usr/src/datasetbuilder/scripts/process_data.sh
+RUN chmod +x /usr/src/datasetbuilder/scripts/pytype_data.sh
+RUN chmod +x /usr/src/datasetbuilder/scripts/tensorise_data.sh
+RUN chmod +x /usr/src/datasetbuilder/scripts/tokenize_data.sh
+
+RUN mkdir -p /usr/data

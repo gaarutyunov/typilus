@@ -1,9 +1,0 @@
-FROM germanarutyunov/typilus-env:latest
-
-RUN chmod +x /usr/src/datasetbuilder/scripts/process_data.sh
-
-RUN mkdir -p /usr/data
-
-RUN dotnet restore /usr/src/datasetbuilder/near-duplicate-code-detector/DuplicateCodeDetector/DuplicateCodeDetector.csproj
-
-CMD ["/usr/src/datasetbuilder/scripts/process_data.sh"]
