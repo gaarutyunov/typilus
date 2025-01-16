@@ -4,13 +4,15 @@ This image can be used to prepare repositories collected using [gh-exporter](htt
 
 ## Usage
 
-1. Pull the image:
+### Pull the image:
 
 ```bash
 docker pull germanarutyunov/typilus-env:latest
 ```
 
-2. Run the full data processing script. Notice the volume mount that points to the local path where you cloned the repositories:
+### Process Data (full)
+
+Run the full data processing script. Notice the volume mount that points to the local path where you cloned the repositories:
 
 ```bash
 docker run -v /local/path/to/repos:/usr/data germanarutyunov/typilus-env:latest bash scripts/process_data.sh --add-raw-data --annotation-vocab-size 100 --model graph2hybridmetric
@@ -26,7 +28,9 @@ The script accepts the following options:
 
 --model: the name of the Typilus model used to process the data
 
-3. You can also run all the stages separately in interactive mode (see stages list and corresponding scripts below):
+### Process Data (in stages)
+
+You can also run all the stages separately in interactive mode (see stages list and corresponding scripts below):
 
 ```bash
 docker run -v /local/path/to/repos:/usr/data -it germanarutyunov/typilus-env:latest bash
