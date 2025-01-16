@@ -2,18 +2,15 @@
 
 cd /usr/data
 
-cpuset=$(cat /sys/fs/cgroup/cpuset/cpuset.cpus)
-limits=(${cpuset//-/ })
-TOTAL_CPUS=$((${limits[1]}-${limits[0]}+1))
-echo "CPU count is ${TOTAL_CPUS}"
+TOTAL_CPUS=$(nproc)
 
 ###
 # We are now ready to run pytype on our full corpus
 ##
 export SITE_PACKAGES=/usr/local/lib/python3.6/dist-packages
 for repo in ./raw_repos/*; do
-     echo Running: pytype -V3.9 -j $TOTAL_CPUS --keep-going -o ./pytype -P $SITE_PACKAGES:$repo infer $repo
-     pytype -V3.9 -j $TOTAL_CPUS --keep-going -o ./pytype -P $SITE_PACKAGES:$repo infer $repo
+     echo Running: pytype -V3.6 -j $TOTAL_CPUS --keep-going -o ./pytype -P $SITE_PACKAGES:$repo infer $repo
+     pytype -V3.6 -j $TOTAL_CPUS --keep-going -o ./pytype -P $SITE_PACKAGES:$repo infer $repo
 
      files=$(find $repo -name "*.py")
      for f in $files
