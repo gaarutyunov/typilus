@@ -1,75 +1,64 @@
-# Data Preparation
+# Typilus Data Preparation
 
-We utilise [Docker](https://www.docker.com/) to improve the replicability of
-data extraction. The Docker container will
-
-1. download Python repositories;
-2. use [pytype](https://github.com/google/pytype) to infer the types of some
-   unannotated terms;
-3. build graphs from the partially annotated Python code;
-4. split the graphs into three sets: training, validation, and testing.
-
-> We expect this process to take a few days, mainly because pytype
-> needs a lot of time to infer types across a large Python corpus and fully resolve a
-> large number of dependencies. To quickly test the pipeline, we recommend using
-> the `typedRepos-small.txt` in the `metadata` folder instead of the full
-> `typedRepos.txt` used below.
->
-> In our experiments we employed an Azure [F32s v2](https://docs.microsoft.com/en-us/azure/virtual-machines/fsv2-series?toc=/azure/virtual-machines/linux/toc.json&bc=/azure/virtual-machines/linux/breadcrumb/toc.json) VM.
+This image can be used to prepare repositories collected using [gh-exporter](https://github.com/gaarutyunov/gh-exporter) tool for ML model training.
 
 ## Usage
 
-First, build the Docker image from the provided `Dockerfile`. Assuming that you
-are in the directory of this README file, run:
+1. Pull the image:
 
 ```bash
-docker build . -t typilus-env
+docker pull germanarutyunov/typilus-env:latest
 ```
 
-Then, create a container from the built image, mount `/local/path` to
-`/container/path`, and run _bash_ in the container:
+2. Run the full data processing script. Notice the volume mount that points to the local path where you cloned the repositories:
 
 ```bash
-docker run --rm -it -v /local/path/to/store/data:/usr/data typilus-env:latest bash
+docker run -v /local/path/to/repos:/usr/data germanarutyunov/typilus-env:latest bash scripts/process_data.sh --add-raw-data --annotation-vocab-size 100 --model graph2hybridmetric
 ```
 
-Finally, to clone the repositories, infer types, build the graphs for the deep
-learning model, and split the data into folds, run:
+The script accepts the following options:
+
+--pytype: adds types inferred by pytype to the source code (takes a long time)
+--add-raw-data: adds raw graph data to the resulting graph tensors
+--annotation-vocab-size: size of the type annotation vocabulary, i.e. the number of types recognized by the model
+--model: the name of the Typilus model used to process the data
+
+3. You can also run all the stages separately in interactive mode (see stages list and corresponding scripts below):
 
 ```bash
-bash scripts/prepare_data.sh pldi2020-dataset.spec
+docker run -v /local/path/to/repos:/usr/data -it germanarutyunov/typilus-env:latest bash
 ```
 
-Alternatively, run
-```bash
-bash scripts/prepare_data_small.sh
-```
-to create a small, toy corpus.
+## Stages
 
-This script writes all related data to `/local/path/to/store/data`. Specifically,
+### Tokenization
 
-* `dataset.spec` contains the git URLs and SHAs of the downloaded repositories.
-* `graph-dataset-split` contains the extracted graphs in chunked `.jsonl.gz` format,
-   split into train-validation-test in a replicable manner.
-* `graph-dataset/_type_lattice.json.gz` contains the statically inferred
-   type lattice for the given programs.
+This step is necessary for efficient code deduplication. It is done with the following script [scripts/tokenize_data.sh](https://github.com/gaarutyunov/typilus/blob/master/src/data_preparation/scripts/tokenize_data.sh).
 
-To extract the exact data used in the PLDI 2020 submission, you need to clone the
-repositories and checkout the SHA shown in `pldi2020-dataset.spec` which can be
-found in this folder. To achieve that modify `prepare_data.sh` as discussed in
-that file. 
+### Deduplication
 
-> Cloning multiple repos at a specific SHA takes some time. We recommend that you first test the
-  script on `pldi2020-dataset-sample.spec` that contains only one repository.
+This is a very important step to avoid code duplication in train and test samples. The script is [scripts/deduplicate_data.sh](https://github.com/gaarutyunov/typilus/blob/master/src/data_preparation/scripts/deduplicate_data.sh).
 
-To view the `.json.gz` files, consider using:
+### Adding types
 
-```bash
-zcat file.json.gz | python -m json.tool | less
-```
+During this step pytype is used to add types that can be added statically to the source code. This way the quality of the dataset is increased. The script is [scripts/pytype_data.sh](https://github.com/gaarutyunov/typilus/blob/master/src/data_preparation/scripts/pytype_data.sh).
 
-or for viewing (for example) the first line of a `.jsonl.gz` file:
+If run from the [scripts/process_data.sh](https://github.com/gaarutyunov/typilus/blob/master/src/data_preparation/scripts/process_data.sh) the step is optional and will be executed only if the `--pytype` option is passed to the script.
 
-```bash
-zcat file.jsonl.gz | head -n 1 | python -m json.tool | less
-```
+### Graph extraction
+
+Later the graphs are extracted using the typilus pipeline. The script is [scripts/extract_graphs.sh](https://github.com/gaarutyunov/typilus/blob/master/src/data_preparation/scripts/extract_graphs.sh).
+
+### Data split
+
+The data is then split into train, valid and test samples. The script is [scripts/split_data.sh](https://github.com/gaarutyunov/typilus/blob/master/src/data_preparation/scripts/split_data.sh).
+
+### Conversion to tensors
+
+The data split then can be converted into tensors that can be processed by the ML model. The script is [scripts/tensorise_data.sh](https://github.com/gaarutyunov/typilus/blob/master/src/data_preparation/scripts/tensorise_data.sh).
+
+The script accepts three options:
+
+--add-raw-data: adds raw graph data to the resulting graph tensors
+--annotation-vocab-size: size of the type annotation vocabulary, i.e. the number of types recognized by the model
+--model: the name of the Typilus model used to process the data
