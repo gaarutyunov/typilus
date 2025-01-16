@@ -19,8 +19,11 @@ docker run -v /local/path/to/repos:/usr/data germanarutyunov/typilus-env:latest 
 The script accepts the following options:
 
 --pytype: adds types inferred by pytype to the source code (takes a long time)
+
 --add-raw-data: adds raw graph data to the resulting graph tensors
+
 --annotation-vocab-size: size of the type annotation vocabulary, i.e. the number of types recognized by the model
+
 --model: the name of the Typilus model used to process the data
 
 3. You can also run all the stages separately in interactive mode (see stages list and corresponding scripts below):
@@ -60,5 +63,7 @@ The data split then can be converted into tensors that can be processed by the M
 The script accepts three options:
 
 --add-raw-data: adds raw graph data to the resulting graph tensors
+
 --annotation-vocab-size: size of the type annotation vocabulary, i.e. the number of types recognized by the model
+
 --model: the name of the Typilus model used to process the data
