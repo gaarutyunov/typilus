@@ -29,6 +29,8 @@ jobs:
           file: src/data_preparation/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/typilus-env:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v4
