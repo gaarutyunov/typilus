@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 add_raw_data=false
-annotation_vocab_size=10000
+annotation_vocab_size=100
 model="graph2hybridmetric"
 
 while [[ "$#" -gt 0 ]]; do
@@ -15,12 +15,6 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 cd /usr/data
-
-readonly SRC_BASE="/usr/src/datasetbuilder/scripts/"
-mkdir -p graph-dataset
-python3 "$SRC_BASE"graph_generator/extract_graphs.py ./raw_repos/ ./corpus_duplicates.json ./graph-dataset $SRC_BASE/../metadata/typingRules.json --debug
-mkdir -p graph-dataset-split
-python3 "$SRC_BASE"utils/split.py -data-dir ./graph-dataset -out-dir ./graph-dataset-split
 
 ###
 # Tensorise data
