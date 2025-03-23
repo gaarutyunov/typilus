@@ -14,8 +14,6 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
-cd /usr/data
-
 ###
 # Tensorise data
 ##
